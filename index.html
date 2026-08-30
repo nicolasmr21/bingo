@@ -4,287 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bingo - Multicartón</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            /* Ficha por defecto */
-            --chip-color: rgba(231, 76, 60, 0.85);
-            --chip-border: #ff6b6b;
-            --chip-glow: rgba(231, 76, 60, 0.6);
-        }
-
-        body {
-            background: #0d0f12;
-            background-image: radial-gradient(circle at 50% 50%, #1a1e26 0%, #0a0b0d 100%);
-            color: #d1d5db;
-            font-family: 'Arial Black', 'Impact', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 16px;
-        }
-
-        /* Panel Superior de Controles */
-        .panel-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 14px 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            width: 100%;
-            max-width: 900px;
-        }
-
-        .controls-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .control-label {
-            font-family: Arial, sans-serif;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #a0a6b0;
-            font-weight: bold;
-        }
-
-        .btn-action {
-            background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-family: Arial, sans-serif;
-            font-size: 0.85rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.1s, background 0.2s;
-        }
-
-        .btn-action:active {
-            transform: scale(0.95);
-        }
-
-        .btn-reset {
-            background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
-        }
-
-        .select-carton {
-            background: #1f232b;
-            color: #fff;
-            border: 1px solid #4a505d;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-family: Arial, sans-serif;
-            font-size: 0.85rem;
-            font-weight: bold;
-            outline: none;
-        }
-
-        .color-options {
-            display: flex;
-            gap: 8px;
-        }
-
-        .color-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            outline: none;
-        }
-
-        .color-btn:hover, .color-btn.active {
-            transform: scale(1.25);
-            box-shadow: 0 0 8px rgba(255,255,255,0.8);
-        }
-
-        /* Contenedor Multicartón */
-        .cards-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        /* Estilo Individual del Cartón */
-        .bingo-card {
-            border-radius: 20px;
-            padding: 16px;
-            width: 100%;
-            max-width: 350px;
-            flex: 1 1 320px;
-            box-shadow: 
-                0 15px 30px rgba(0,0,0,0.8),
-                inset 0 1px 1px rgba(255,255,255,0.2),
-                inset 0 -2px 5px rgba(0,0,0,0.8);
-            position: relative;
-        }
-
-        /* Temas de Color por Cartón */
-        .theme-21 {
-            background: radial-gradient(circle at 50% 0%, #3a3f4d 0%, #1a1c23 70%);
-            border: 4px solid #4a505d;
-        }
-
-        .theme-4, .theme-9 {
-            background: radial-gradient(circle at 50% 0%, #63284f 0%, #2b0f21 70%);
-            border: 4px solid #8c3f72;
-        }
-
-        .theme-30 {
-            background: radial-gradient(circle at 50% 0%, #382b5e 0%, #160f2a 70%);
-            border: 4px solid #58468c;
-        }
-
-        .carton-top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .btn-remove {
-            background: rgba(255, 255, 255, 0.15);
-            color: #ff6b6b;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .btn-remove:hover {
-            background: rgba(231, 76, 60, 0.8);
-            color: #fff;
-        }
-
-        .carton-header {
-            font-size: 0.75rem;
-            color: #a0a6b0;
-            font-weight: bold;
-            letter-spacing: 1px;
-            font-family: Arial, sans-serif;
-        }
-
-        .carton-header span {
-            font-size: 1.2rem;
-            color: #f3f4f6;
-            font-family: 'Arial Black', sans-serif;
-        }
-
-        .bingo-title-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            text-align: center;
-            font-size: clamp(2rem, 8vw, 2.8rem);
-            line-height: 1;
-            margin-bottom: 4px;
-            background: linear-gradient(180deg, #ffffff 20%, #a1a8b8 50%, #4a505d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.9));
-        }
-
-        .ranges-row {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            text-align: center;
-            font-size: 0.55rem;
-            color: #a0a6b0;
-            margin-bottom: 10px;
-            font-family: Arial, sans-serif;
-            font-weight: bold;
-        }
-
-        .bingo-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-        }
-
-        /* Celdas */
-        .cell {
-            aspect-ratio: 1;
-            width: 100%;
-            background: radial-gradient(circle at 35% 35%, #2a2e38 0%, #121418 100%);
-            border: 2px solid #363b45;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(1rem, 4.5vw, 1.4rem);
-            color: #e5e7eb;
-            cursor: pointer;
-            user-select: none;
-            position: relative;
-            box-shadow: 
-                inset 0 2px 4px rgba(255,255,255,0.15),
-                inset 0 -2px 4px rgba(0,0,0,0.8),
-                0 3px 5px rgba(0,0,0,0.6);
-            transition: transform 0.1s ease;
-        }
-
-        .cell:active {
-            transform: scale(0.92);
-        }
-
-        /* Ficha de marcado */
-        .cell.marked::after {
-            content: '';
-            position: absolute;
-            width: 82%;
-            height: 82%;
-            background-color: var(--chip-color);
-            border-radius: 50%;
-            border: 2px solid var(--chip-border);
-            box-shadow: 
-                0 0 10px var(--chip-glow),
-                inset 0 2px 4px rgba(255,255,255,0.4);
-            animation: popIn 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .cell.free-space {
-            font-size: clamp(1.2rem, 5vw, 1.7rem);
-            background: radial-gradient(circle at 35% 35%, #353a47 0%, #15171d 100%);
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -293,18 +13,18 @@
             <!-- Agregar Cartón -->
             <div class="control-group">
                 <span class="control-label">Añadir:</span>
-                <select class="select-carton" id="cartonSelect">
+                <select class="select-carton" id="cartonSelect" aria-label="Selecciona un cartón para agregar">
                     <option value="21">Cartón 21 (Negro)</option>
                     <option value="4">Cartón 4 (Fucsia)</option>
                     <option value="30">Cartón 30 (Púrpura)</option>
                     <option value="9">Cartón 9 (Fucsia)</option>
                 </select>
-                <button class="btn-action" onclick="agregarCarton()">+ Agregar</button>
+                <button class="btn-action" type="button" aria-label="Agregar cartón" onclick="agregarCarton()">+ Agregar</button>
             </div>
 
             <!-- Acciones -->
             <div class="control-group">
-                <button class="btn-action btn-reset" onclick="resetAll()">Limpiar Todos</button>
+                <button class="btn-action btn-reset" type="button" aria-label="Limpiar todos los cartones" onclick="resetAll()">Limpiar Todos</button>
             </div>
         </div>
 
@@ -312,13 +32,37 @@
             <!-- Color de Fichas -->
             <div class="control-group">
                 <span class="control-label">Fichas:</span>
-                <div class="color-options" id="chipOptions">
-                    <button class="color-btn active" style="background:#e74c3c;" onclick="setChipColor('rgba(231, 76, 60, 0.85)', '#ff6b6b', 'rgba(231, 76, 60, 0.6)', this)"></button>
-                    <button class="color-btn" style="background:#3498db;" onclick="setChipColor('rgba(52, 152, 219, 0.85)', '#5dade2', 'rgba(52, 152, 219, 0.6)', this)"></button>
-                    <button class="color-btn" style="background:#2ecc71;" onclick="setChipColor('rgba(46, 204, 113, 0.85)', '#58d68d', 'rgba(46, 204, 113, 0.6)', this)"></button>
-                    <button class="color-btn" style="background:#e84393;" onclick="setChipColor('rgba(232, 67, 147, 0.85)', '#fd79a8', 'rgba(232, 67, 147, 0.6)', this)"></button>
-                    <button class="color-btn" style="background:#00cec9;" onclick="setChipColor('rgba(0, 206, 201, 0.85)', '#81ecec', 'rgba(0, 206, 201, 0.6)', this)"></button>
+                <div class="color-options" id="chipOptions" aria-label="Selector de color de fichas">
+                    <button class="color-btn active" type="button" aria-label="Color rojo" title="Color rojo" style="background:#e74c3c;" onclick="setChipColor('rgba(231, 76, 60, 0.85)', '#ff6b6b', 'rgba(231, 76, 60, 0.6)', this)"></button>
+                    <button class="color-btn" type="button" aria-label="Color azul" title="Color azul" style="background:#3498db;" onclick="setChipColor('rgba(52, 152, 219, 0.85)', '#5dade2', 'rgba(52, 152, 219, 0.6)', this)"></button>
+                    <button class="color-btn" type="button" aria-label="Color verde" title="Color verde" style="background:#2ecc71;" onclick="setChipColor('rgba(46, 204, 113, 0.85)', '#58d68d', 'rgba(46, 204, 113, 0.6)', this)"></button>
+                    <button class="color-btn" type="button" aria-label="Color rosa" title="Color rosa" style="background:#e84393;" onclick="setChipColor('rgba(232, 67, 147, 0.85)', '#fd79a8', 'rgba(232, 67, 147, 0.6)', this)"></button>
+                    <button class="color-btn" type="button" aria-label="Color turquesa" title="Color turquesa" style="background:#00cec9;" onclick="setChipColor('rgba(0, 206, 201, 0.85)', '#81ecec', 'rgba(0, 206, 201, 0.6)', this)"></button>
                 </div>
+            </div>
+        </div>
+
+        <div class="controls-row">
+            <!-- Patrones de Juego -->
+            <div class="control-group">
+                <span class="control-label">Modo:</span>
+                <select class="select-carton" id="patternSelect" onchange="updatePattern(this.value)" aria-label="Selecciona un patrón de juego">
+                    <option value="none">Sin Guía</option>
+                    <option value="line-h">Línea Horizontal</option>
+                    <option value="line-v">Línea Vertical</option>
+                    <option value="diag-l">Diagonal ↙</option>
+                    <option value="diag-r">Diagonal ↘</option>
+                    <option value="x">X (2 Diagonales)</option>
+                    <option value="cross">Cruz</option>
+                    <option value="b">Columna B</option>
+                    <option value="i">Columna I</option>
+                    <option value="n">Letra N</option>
+                    <option value="g">Columna G</option>
+                    <option value="o">Columna O</option>
+                    <option value="t">Letra T (Fila Top + Centro)</option>
+                    <option value="corners">4 Esquinas</option>
+                    <option value="full">Cartón Completo</option>
+                </select>
             </div>
         </div>
     </div>
@@ -326,116 +70,6 @@
     <!-- Contenedor donde se generan los cartones -->
     <div class="cards-container" id="cardsContainer"></div>
 
-    <script>
-        const baseCartones = {
-            '21': {
-                num: '21',
-                themeClass: 'theme-21',
-                numeros: [
-                    [14, 23, 41, 56, 63],
-                    [9, 17, 33, 53, 66],
-                    [10, 29, 'FREE', 47, 69],
-                    [11, 30, 40, 51, 75],
-                    [3, 18, 31, 54, 72]
-                ]
-            },
-            '4': {
-                num: '4',
-                themeClass: 'theme-4',
-                numeros: [
-                    [11, 21, 38, 60, 64],
-                    [5, 30, 43, 51, 70],
-                    [4, 16, 'FREE', 54, 65],
-                    [9, 24, 44, 56, 63],
-                    [12, 29, 35, 50, 62]
-                ]
-            },
-            '30': {
-                num: '30',
-                themeClass: 'theme-30',
-                numeros: [
-                    [10, 20, 31, 46, 69],
-                    [8, 19, 39, 54, 75],
-                    [12, 28, 'FREE', 50, 73],
-                    [14, 26, 42, 56, 63],
-                    [2, 30, 40, 58, 71]
-                ]
-            },
-            '9': {
-                num: '9',
-                themeClass: 'theme-9',
-                numeros: [
-                    [4, 19, 39, 50, 70],
-                    [13, 26, 36, 49, 72],
-                    [1, 16, 'FREE', 57, 69],
-                    [10, 28, 32, 55, 61],
-                    [8, 24, 45, 47, 64]
-                ]
-            }
-        };
-
-        let cardCounter = 0;
-
-        function agregarCarton(id = null) {
-            const select = document.getElementById('cartonSelect');
-            const cartonId = id || select.value;
-            const data = baseCartones[cartonId];
-            cardCounter++;
-
-            const container = document.getElementById('cardsContainer');
-            const cardElement = document.createElement('div');
-            cardElement.className = `bingo-card ${data.themeClass}`;
-            cardElement.id = `card-instance-${cardCounter}`;
-
-            let gridHTML = '';
-            data.numeros.forEach(row => {
-                row.forEach(val => {
-                    if (val === 'FREE') {
-                        gridHTML += `<div class="cell free-space">🦁</div>`;
-                    } else {
-                        gridHTML += `<div class="cell" onclick="this.classList.toggle('marked')">${val}</div>`;
-                    }
-                });
-            });
-
-            cardElement.innerHTML = `
-                <div class="carton-top-bar">
-                    <div class="carton-header">CARTON <span>${data.num}</span></div>
-                    <button class="btn-remove" onclick="removerCarton('${cardElement.id}')">✕</button>
-                </div>
-                <div class="bingo-title-grid">
-                    <span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>
-                </div>
-                <div class="ranges-row">
-                    <span>1 AL 15</span><span>16 AL 30</span><span>31 AL 45</span><span>46 AL 60</span><span>61 AL 75</span>
-                </div>
-                <div class="bingo-grid">${gridHTML}</div>
-            `;
-
-            container.appendChild(cardElement);
-        }
-
-        function removerCarton(instanceId) {
-            const card = document.getElementById(instanceId);
-            if (card) card.remove();
-        }
-
-        function resetAll() {
-            document.querySelectorAll('.cell').forEach(c => c.classList.remove('marked'));
-        }
-
-        function setChipColor(fill, border, glow, btn) {
-            document.documentElement.style.setProperty('--chip-color', fill);
-            document.documentElement.style.setProperty('--chip-border', border);
-            document.documentElement.style.setProperty('--chip-glow', glow);
-
-            document.querySelectorAll('#chipOptions .color-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        // Cargar 2 cartones iniciales por defecto para probar
-        agregarCarton('21');
-        agregarCarton('9');
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
