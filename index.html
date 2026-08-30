@@ -19,12 +19,12 @@
                     <option value="30">Cartón 30 (Púrpura)</option>
                     <option value="9">Cartón 9 (Fucsia)</option>
                 </select>
-                <button class="btn-action" type="button" aria-label="Agregar cartón" onclick="agregarCarton()">+ Agregar</button>
+                <button class="btn-action" id="addCartonButton" type="button" aria-label="Agregar cartón">+ Agregar</button>
             </div>
 
             <!-- Acciones -->
             <div class="control-group">
-                <button class="btn-action btn-reset" type="button" aria-label="Limpiar todos los cartones" onclick="resetAll()">Limpiar Todos</button>
+                <button class="btn-action btn-reset" id="resetCardsButton" type="button" aria-label="Limpiar todos los cartones">Limpiar Todos</button>
             </div>
         </div>
 
@@ -33,11 +33,11 @@
             <div class="control-group">
                 <span class="control-label">Fichas:</span>
                 <div class="color-options" id="chipOptions" aria-label="Selector de color de fichas">
-                    <button class="color-btn active" type="button" aria-label="Color rojo" title="Color rojo" style="background:#e74c3c;" onclick="setChipColor('rgba(231, 76, 60, 0.85)', '#ff6b6b', 'rgba(231, 76, 60, 0.6)', this)"></button>
-                    <button class="color-btn" type="button" aria-label="Color azul" title="Color azul" style="background:#3498db;" onclick="setChipColor('rgba(52, 152, 219, 0.85)', '#5dade2', 'rgba(52, 152, 219, 0.6)', this)"></button>
-                    <button class="color-btn" type="button" aria-label="Color verde" title="Color verde" style="background:#2ecc71;" onclick="setChipColor('rgba(46, 204, 113, 0.85)', '#58d68d', 'rgba(46, 204, 113, 0.6)', this)"></button>
-                    <button class="color-btn" type="button" aria-label="Color rosa" title="Color rosa" style="background:#e84393;" onclick="setChipColor('rgba(232, 67, 147, 0.85)', '#fd79a8', 'rgba(232, 67, 147, 0.6)', this)"></button>
-                    <button class="color-btn" type="button" aria-label="Color turquesa" title="Color turquesa" style="background:#00cec9;" onclick="setChipColor('rgba(0, 206, 201, 0.85)', '#81ecec', 'rgba(0, 206, 201, 0.6)', this)"></button>
+                    <button class="color-btn active" type="button" aria-label="Color rojo" title="Color rojo" data-fill="rgba(231, 76, 60, 0.85)" data-border="#ff6b6b" data-glow="rgba(231, 76, 60, 0.6)" style="background:#e74c3c;"></button>
+                    <button class="color-btn" type="button" aria-label="Color azul" title="Color azul" data-fill="rgba(52, 152, 219, 0.85)" data-border="#5dade2" data-glow="rgba(52, 152, 219, 0.6)" style="background:#3498db;"></button>
+                    <button class="color-btn" type="button" aria-label="Color verde" title="Color verde" data-fill="rgba(46, 204, 113, 0.85)" data-border="#58d68d" data-glow="rgba(46, 204, 113, 0.6)" style="background:#2ecc71;"></button>
+                    <button class="color-btn" type="button" aria-label="Color rosa" title="Color rosa" data-fill="rgba(232, 67, 147, 0.85)" data-border="#fd79a8" data-glow="rgba(232, 67, 147, 0.6)" style="background:#e84393;"></button>
+                    <button class="color-btn" type="button" aria-label="Color turquesa" title="Color turquesa" data-fill="rgba(0, 206, 201, 0.85)" data-border="#81ecec" data-glow="rgba(0, 206, 201, 0.6)" style="background:#00cec9;"></button>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
             <!-- Patrones de Juego -->
             <div class="control-group">
                 <span class="control-label">Modo:</span>
-                <select class="select-carton" id="patternSelect" onchange="updatePattern(this.value)" aria-label="Selecciona un patrón de juego">
+                <select class="select-carton" id="patternSelect" aria-label="Selecciona un patrón de juego">
                     <option value="none">Sin Guía</option>
                     <option value="line-h">Línea Horizontal</option>
                     <option value="line-v">Línea Vertical</option>
