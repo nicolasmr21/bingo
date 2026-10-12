@@ -35,11 +35,11 @@
             <div class="control-group">
                 <span class="control-label">Fichas:</span>
                 <div class="color-options" id="chipOptions" aria-label="Selector de color de fichas">
-                    <button class="color-btn active" type="button" aria-label="Color rojo" title="Color rojo" data-fill="rgba(231, 76, 60, 0.85)" data-border="#ff6b6b" data-glow="rgba(231, 76, 60, 0.6)" style="background-color: rgba(231, 76, 60, 0.85);"></button>
-                    <button class="color-btn" type="button" aria-label="Color azul" title="Color azul" data-fill="rgba(52, 152, 219, 0.85)" data-border="#5dade2" data-glow="rgba(52, 152, 219, 0.6)" style="background-color: rgba(52, 152, 219, 0.85);"></button>
-                    <button class="color-btn" type="button" aria-label="Color verde" title="Color verde" data-fill="rgba(46, 204, 113, 0.85)" data-border="#58d68d" data-glow="rgba(46, 204, 113, 0.6)" style="background-color: rgba(46, 204, 113, 0.85);"></button>
-                    <button class="color-btn" type="button" aria-label="Color rosa" title="Color rosa" data-fill="rgba(232, 67, 147, 0.85)" data-border="#fd79a8" data-glow="rgba(232, 67, 147, 0.6)" style="background-color: rgba(232, 67, 147, 0.85);"></button>
-                    <button class="color-btn" type="button" aria-label="Color turquesa" title="Color turquesa" data-fill="rgba(0, 206, 201, 0.85)" data-border="#81ecec" data-glow="rgba(0, 206, 201, 0.6)" style="background-color: rgba(0, 206, 201, 0.85);"></button>
+                    <button class="color-btn active" type="button" aria-label="Color rojo" title="Color rojo" data-fill="rgba(231, 76, 60, 0.85)" data-border="#ff6b6b" data-glow="rgba(231, 76, 60, 0.6)" style="background:#e74c3c"></button>
+                    <button class="color-btn" type="button" aria-label="Color azul" title="Color azul" data-fill="rgba(52, 152, 219, 0.85)" data-border="#5dade2" data-glow="rgba(52, 152, 219, 0.6)" style="background:#3498db"></button>
+                    <button class="color-btn" type="button" aria-label="Color verde" title="Color verde" data-fill="rgba(46, 204, 113, 0.85)" data-border="#58d68d" data-glow="rgba(46, 204, 113, 0.6)" style="background:#2ecc71"></button>
+                    <button class="color-btn" type="button" aria-label="Color rosa" title="Color rosa" data-fill="rgba(232, 67, 147, 0.85)" data-border="#fd79a8" data-glow="rgba(232, 67, 147, 0.6)" style="background:#e84393"></button>
+                    <button class="color-btn" type="button" aria-label="Color turquesa" title="Color turquesa" data-fill="rgba(0, 206, 201, 0.85)" data-border="#81ecec" data-glow="rgba(0, 206, 201, 0.6)" style="background:#00cec9"></button>
                 </div>
             </div>
         </div>
@@ -68,6 +68,11 @@
             </div>
         </div>
     </div>
+
+    <section class="repo-stats-panel" aria-label="Repository language composition">
+        <h2 class="repo-stats-title">Language composition</h2>
+        <div id="languageTable" class="language-table" role="table" aria-label="Language composition table"></div>
+    </section>
 
     <!-- Contenedor donde se generan los cartones -->
     <div class="cards-container" id="cardsContainer"></div>
