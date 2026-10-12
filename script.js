@@ -53,6 +53,17 @@ const BASE_CARTONES = {
             [1, 30, 44, 46, 72],
             [15, 27, 40, 53, 74]
         ]
+    },
+    '36': {
+        num: '36',
+        themeClass: 'theme-36',
+        numeros: [
+            [7, 24, 43, 50, 72],
+            [10, 25, 41, 47, 61],
+            [2, 27, 'FREE', 53, 63],
+            [12, 16, 45, 52, 67],
+            [6, 18, 36, 49, 71]
+        ]
     }
 };
 
@@ -165,13 +176,6 @@ function createConfetti(cell) {
     setTimeout(() => confettiLayer.remove(), 700);
 }
 
-function removerCarton(instanceId) {
-    const card = document.getElementById(instanceId);
-    if (card) {
-        card.remove();
-    }
-}
-
 function resetAll() {
     document.querySelectorAll('.cell').forEach((cell) => cell.classList.remove('marked'));
 }
@@ -256,8 +260,7 @@ function bindEvents() {
 
 function initializeApp() {
     bindEvents();
-    agregarCarton('21');
-    agregarCarton('9');
+    agregarCarton('36');
     updatePattern('none');
 }
 
