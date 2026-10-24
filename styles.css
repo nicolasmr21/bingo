@@ -207,15 +207,6 @@ button {
     margin-bottom: 6px;
 }
 
-.card-theme-picker {
-    margin-left: auto;
-}
-
-.color-btn-sm {
-    width: 16px;
-    height: 16px;
-}
-
 .btn-remove {
     background: rgba(255, 255, 255, 0.15);
     color: #ff6b6b;
@@ -444,22 +435,6 @@ button {
         width: 30px;
         height: 30px;
     }
-}
-
-/* Temas de Color por Cartón */
-.theme-21 {
-    background: radial-gradient(circle at 50% 0%, #3a3f4d 0%, #1a1c23 70%);
-    border: 4px solid #4a505d;
-}
-
-.theme-4, .theme-9 {
-    background: radial-gradient(circle at 50% 0%, #63284f 0%, #2b0f21 70%);
-    border: 4px solid #8c3f72;
-}
-
-.theme-30 {
-    background: radial-gradient(circle at 50% 0%, #382b5e 0%, #160f2a 70%);
-    border: 4px solid #58468c;
 }
 
 .carton-top-bar {

@@ -57,6 +57,16 @@ const BASE_CARTONES = {
             [3, 18, 31, 54, 72]
         ]
     },
+    '18': {
+        num: '18',
+        numeros: [
+            [9, 30, 44, 57, 75],
+            [10, 16, 34, 50, 67],
+            [2, 25, 'FREE', 47, 72],
+            [15, 19, 39, 52, 61],
+            [5, 27, 33, 49, 63]
+        ]
+    },
     '4': {
         num: '4',
         numeros: [
@@ -85,6 +95,36 @@ const BASE_CARTONES = {
             [1, 16, 'FREE', 57, 69],
             [10, 28, 32, 55, 61],
             [8, 24, 45, 47, 64]
+        ]
+    },
+    '7': {
+        num: '7',
+        numeros: [
+            [7, 28, 36, 57, 72],
+            [14, 21, 40, 54, 64],
+            [13, 20, 'FREE', 59, 68],
+            [15, 27, 38, 60, 65],
+            [11, 23, 42, 56, 71]
+        ]
+    },
+    '32': {
+        num: '32',
+        numeros: [
+            [6, 19, 41, 59, 66],
+            [14, 25, 35, 47, 65],
+            [11, 28, 'FREE', 60, 71],
+            [1, 30, 44, 46, 72],
+            [15, 27, 40, 53, 74]
+        ]
+    },
+    '36': {
+        num: '36',
+        numeros: [
+            [7, 24, 43, 50, 72],
+            [10, 25, 41, 47, 61],
+            [2, 27, 'FREE', 53, 63],
+            [12, 16, 45, 52, 67],
+            [6, 18, 36, 49, 71]
         ]
     }
 };
@@ -184,32 +224,32 @@ const PATTERN_GROUPS = [
         label: 'Letras',
         options: [
             { id: 'letter-a', name: 'Letra A', shape: [
-                '.XXX.',
+                'XXXXX',
                 'X...X',
                 'XXXXX',
                 'X...X',
                 'X...X'
             ] },
             { id: 'letter-b', name: 'Letra B', shape: [
-                'XXXX.',
+                'XXXXX',
                 'X...X',
-                'XXXX.',
+                'XXXXX',
                 'X...X',
-                'XXXX.'
+                'XXXXX'
             ] },
             { id: 'letter-c', name: 'Letra C', shape: [
-                '.XXXX',
+                'XXXXX',
                 'X....',
                 'X....',
                 'X....',
-                '.XXXX'
+                'XXXXX'
             ] },
             { id: 'letter-d', name: 'Letra D', shape: [
-                'XXXX.',
+                'XXXXX',
                 'X...X',
                 'X...X',
                 'X...X',
-                'XXXX.'
+                'XXXXX'
             ] },
             { id: 'letter-e', name: 'Letra E', shape: [
                 'XXXXX',
@@ -226,11 +266,11 @@ const PATTERN_GROUPS = [
                 'X....'
             ] },
             { id: 'letter-g', name: 'Letra G', shape: [
-                '.XXXX',
+                'XXXXX',
                 'X....',
                 'X.XXX',
                 'X...X',
-                '.XXXX'
+                'XXXXX'
             ] },
             { id: 'letter-h', name: 'Letra H', shape: [
                 'X...X',
@@ -281,24 +321,17 @@ const PATTERN_GROUPS = [
                 'X..XX',
                 'X...X'
             ] },
-            { id: 'letter-ñ', name: 'Letra Ñ', shape: [
-                '.X.X.',
-                'X...X',
-                'XX..X',
-                'X.X.X',
-                'X..XX'
-            ] },
             { id: 'letter-o', name: 'Letra O', shape: [
-                '.XXX.',
+                'XXXXX',
                 'X...X',
                 'X...X',
                 'X...X',
-                '.XXX.'
+                'XXXXX'
             ] },
             { id: 'letter-p', name: 'Letra P', shape: [
-                'XXXX.',
+                'XXXXX',
                 'X...X',
-                'XXXX.',
+                'XXXXX',
                 'X....',
                 'X....'
             ] },
@@ -306,22 +339,22 @@ const PATTERN_GROUPS = [
                 '.XXX.',
                 'X...X',
                 'X...X',
-                'X..X.',
-                '.XX.X'
+                'X.XXX',
+                '.XXXX'
             ] },
             { id: 'letter-r', name: 'Letra R', shape: [
-                'XXXX.',
+                'XXXXX',
                 'X...X',
-                'XXXX.',
+                'XXXXX',
                 'X..X.',
                 'X...X'
             ] },
             { id: 'letter-s', name: 'Letra S', shape: [
-                '.XXXX',
+                'XXXXX',
                 'X....',
-                '.XXX.',
+                'XXXXX',
                 '....X',
-                'XXXX.'
+                'XXXXX'
             ] },
             { id: 'letter-t', name: 'Letra T', shape: [
                 'XXXXX',
@@ -335,7 +368,7 @@ const PATTERN_GROUPS = [
                 'X...X',
                 'X...X',
                 'X...X',
-                '.XXX.'
+                'XXXXX'
             ] },
             { id: 'letter-v', name: 'Letra V', shape: [
                 'X...X',
@@ -376,6 +409,41 @@ const PATTERN_GROUPS = [
     }
 ];
 
+function validatePatternGroups(groups) {
+    const options = groups.flatMap((group) => group.options);
+    const letters = options.filter((option) => option.id.startsWith('letter-'));
+    const expectedLetterIds = Array.from({ length: 26 }, (_, index) => (
+        `letter-${String.fromCharCode(97 + index)}`
+    ));
+
+    if (letters.length !== expectedLetterIds.length || letters.some((letter, index) => (
+        letter.id !== expectedLetterIds[index]
+    ))) {
+        throw new Error('Los patrones de letras deben incluir A-Z en orden, sin letras faltantes.');
+    }
+
+    options.forEach((option) => {
+        if (option.id === 'none') {
+            return;
+        }
+
+        const isCompleteGrid = Array.isArray(option.shape)
+            && option.shape.length === GRID_SIZE
+            && option.shape.every((row) => (
+                typeof row === 'string'
+                && row.length === GRID_SIZE
+                && /^[X.]+$/.test(row)
+            ))
+            && option.shape.some((row) => row.includes('X'));
+
+        if (!isCompleteGrid) {
+            throw new Error(`El patrón "${option.name}" debe tener una figura válida de 5×5.`);
+        }
+    });
+}
+
+validatePatternGroups(PATTERN_GROUPS);
+
 const PATTERN_DEFINITIONS = Object.fromEntries(
     PATTERN_GROUPS.flatMap((group) => group.options)
         .filter((option) => option.shape)
@@ -391,8 +459,7 @@ const state = {
 function getDefaultSession() {
     return {
         cards: [
-            { cartonId: '21', themeId: 'negro' },
-            { cartonId: '9', themeId: 'fucsia' }
+            { cartonId: '21' }
         ],
         selectedCartonId: '21',
         selectedThemeId: DEFAULT_THEME_ID
@@ -420,7 +487,6 @@ function loadSession() {
 function saveSession() {
     const cards = Array.from(document.querySelectorAll('.bingo-card')).map((card) => ({
         cartonId: card.dataset.cartonId,
-        themeId: card.dataset.themeId || DEFAULT_THEME_ID,
         marked: Array.from(card.querySelectorAll('.cell.marked')).map((cell) => Number(cell.dataset.cellIndex))
     }));
 
@@ -460,12 +526,9 @@ function applyCardTheme(cardElement, themeId) {
     cardElement.style.setProperty('--card-base', theme.base);
     cardElement.style.setProperty('--card-border', theme.border);
 
-    cardElement.querySelectorAll('.card-theme-picker .color-btn').forEach((button) => {
-        button.classList.toggle('active', button.dataset.themeId === resolvedThemeId);
-    });
 }
 
-function setSelectedTheme(themeId, button = null) {
+function setSelectedTheme(themeId) {
     if (!CARD_THEMES[themeId]) {
         return;
     }
@@ -475,9 +538,7 @@ function setSelectedTheme(themeId, button = null) {
         themeButton.classList.toggle('active', themeButton.dataset.themeId === themeId);
     });
 
-    if (button) {
-        button.classList.add('active');
-    }
+    document.querySelectorAll('.bingo-card').forEach((card) => applyCardTheme(card, themeId));
 }
 
 function createCardElement(cartonId, options = {}) {
@@ -486,7 +547,6 @@ function createCardElement(cartonId, options = {}) {
         return null;
     }
 
-    const themeId = CARD_THEMES[options.themeId] ? options.themeId : state.selectedThemeId;
     const cardElement = document.createElement('div');
     cardElement.className = 'bingo-card';
     cardElement.dataset.cartonId = cartonId;
@@ -506,7 +566,6 @@ function createCardElement(cartonId, options = {}) {
     cardElement.innerHTML = `
         <div class="carton-top-bar">
             <div class="carton-header">CARTON <span>${cartonData.num}</span></div>
-            <div class="card-theme-picker color-options" role="group" aria-label="Color del cartón">${getThemeButtonsHTML(themeId, 'color-btn-sm')}</div>
             <button class="btn-remove" type="button" aria-label="Eliminar cartón">✕</button>
         </div>
         <div class="bingo-title-grid">
@@ -518,7 +577,7 @@ function createCardElement(cartonId, options = {}) {
         <div class="bingo-grid">${gridHTML}</div>
     `;
 
-    applyCardTheme(cardElement, themeId);
+    applyCardTheme(cardElement, state.selectedThemeId);
     return cardElement;
 }
 
@@ -691,7 +750,6 @@ function restoreSession() {
         }
 
         agregarCarton(card.cartonId, {
-            themeId: card.themeId,
             marked: card.marked,
             persist: false
         });
@@ -727,7 +785,7 @@ function bindEvents() {
             return;
         }
 
-        setSelectedTheme(button.dataset.themeId, button);
+        setSelectedTheme(button.dataset.themeId);
         saveSession();
     });
 
@@ -739,16 +797,6 @@ function bindEvents() {
             const card = removeButton.closest('.bingo-card');
             if (card) {
                 card.remove();
-                saveSession();
-            }
-            return;
-        }
-
-        const themeButton = event.target.closest('.card-theme-picker .color-btn');
-        if (themeButton) {
-            const card = themeButton.closest('.bingo-card');
-            if (card) {
-                applyCardTheme(card, themeButton.dataset.themeId);
                 saveSession();
             }
             return;
