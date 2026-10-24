@@ -13,13 +13,13 @@
             <!-- Agregar Cartón -->
             <div class="control-group">
                 <span class="control-label">Añadir:</span>
-                <select class="select-carton" id="cartonSelect" aria-label="Selecciona un cartón para agregar">
-                    <option value="21">Cartón 21 (Negro)</option>
-                    <option value="4">Cartón 4 (Fucsia)</option>
-                    <option value="30">Cartón 30 (Púrpura)</option>
-                    <option value="9">Cartón 9 (Fucsia)</option>
-                </select>
+                <select class="select-carton" id="cartonSelect" aria-label="Selecciona un cartón para agregar"></select>
                 <button class="btn-action" id="addCartonButton" type="button" aria-label="Agregar cartón">+ Agregar</button>
+            </div>
+
+            <div class="control-group">
+                <span class="control-label">Color:</span>
+                <div class="color-options" id="cardThemeOptions" aria-label="Selector de color de cartón"></div>
             </div>
 
             <!-- Acciones -->
@@ -46,23 +46,7 @@
             <!-- Patrones de Juego -->
             <div class="control-group">
                 <span class="control-label">Modo:</span>
-                <select class="select-carton" id="patternSelect" aria-label="Selecciona un patrón de juego">
-                    <option value="none">Sin Guía</option>
-                    <option value="line-h">Línea Horizontal</option>
-                    <option value="line-v">Línea Vertical</option>
-                    <option value="diag-l">Diagonal ↙</option>
-                    <option value="diag-r">Diagonal ↘</option>
-                    <option value="x">X (2 Diagonales)</option>
-                    <option value="cross">Cruz</option>
-                    <option value="b">Columna B</option>
-                    <option value="i">Columna I</option>
-                    <option value="n">Letra N</option>
-                    <option value="g">Columna G</option>
-                    <option value="o">Columna O</option>
-                    <option value="t">Letra T (Fila Top + Centro)</option>
-                    <option value="corners">4 Esquinas</option>
-                    <option value="full">Cartón Completo</option>
-                </select>
+                <select class="select-carton" id="patternSelect" aria-label="Selecciona un patrón de juego"></select>
             </div>
         </div>
     </div>
