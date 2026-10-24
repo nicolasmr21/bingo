@@ -261,7 +261,7 @@ const PATTERN_GROUPS = [
             { id: 'letter-f', name: 'Letra F', shape: [
                 'XXXXX',
                 'X....',
-                'XXXX.',
+                'XXXXX',
                 'X....',
                 'X....'
             ] },
