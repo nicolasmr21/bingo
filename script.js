@@ -588,13 +588,6 @@ function createConfetti(cell) {
     setTimeout(() => confettiLayer.remove(), 700);
 }
 
-function removerCarton(instanceId) {
-    const card = document.getElementById(instanceId);
-    if (card) {
-        card.remove();
-    }
-}
-
 function resetAll() {
     document.querySelectorAll('.cell').forEach((cell) => cell.classList.remove('marked'));
     saveSession();
