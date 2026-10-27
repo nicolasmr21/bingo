@@ -353,8 +353,7 @@ h1 {
     appearance: none;
     border: 2px solid rgba(235, 245, 238, 0.45);
     border-radius: 50%;
-    background-color: transparent;
-    background-image: none;
+    background: var(--swatch, #4a505d);
     background-clip: padding-box;
     -webkit-background-clip: padding-box;
     overflow: hidden;
@@ -890,7 +889,7 @@ h2 {
         display: inline-grid;
         -webkit-appearance: none;
         appearance: none;
-        background-color: transparent;
+        background: var(--swatch, #4a505d);
         background-clip: padding-box;
         -webkit-background-clip: padding-box;
         overflow: hidden;

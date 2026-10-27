@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'bingo-session';
 const DEFAULT_THEME_ID = 'negro';
+const DEFAULT_CHIP_ID = 'rojo';
 
 const CARD_THEMES = {
     negro: {
@@ -43,6 +44,44 @@ const CARD_THEMES = {
         base: '#0d2418',
         border: '#2ecc71',
         swatch: '#2ecc71'
+    }
+};
+
+const CHIP_THEMES = {
+    rojo: {
+        name: 'Rojo',
+        fill: 'rgba(231, 76, 60, 0.86)',
+        border: '#ff9b8f',
+        glow: 'rgba(231, 76, 60, 0.42)',
+        swatch: '#e74c3c'
+    },
+    azul: {
+        name: 'Azul',
+        fill: 'rgba(52, 152, 219, 0.86)',
+        border: '#7fc8f2',
+        glow: 'rgba(52, 152, 219, 0.42)',
+        swatch: '#3498db'
+    },
+    verde: {
+        name: 'Verde',
+        fill: 'rgba(46, 204, 113, 0.86)',
+        border: '#7de5a8',
+        glow: 'rgba(46, 204, 113, 0.42)',
+        swatch: '#2ecc71'
+    },
+    rosa: {
+        name: 'Rosa',
+        fill: 'rgba(232, 67, 147, 0.86)',
+        border: '#ffa0ca',
+        glow: 'rgba(232, 67, 147, 0.42)',
+        swatch: '#e84393'
+    },
+    turquesa: {
+        name: 'Turquesa',
+        fill: 'rgba(0, 206, 201, 0.86)',
+        border: '#81ecec',
+        glow: 'rgba(0, 206, 201, 0.42)',
+        swatch: '#00cec9'
     }
 };
 
@@ -130,6 +169,43 @@ const BASE_CARTONES = {
 };
 
 const GRID_SIZE = 5;
+const BINGO_COLUMNS = [
+    { letter: 'B', minimum: 1, maximum: 15 },
+    { letter: 'I', minimum: 16, maximum: 30 },
+    { letter: 'N', minimum: 31, maximum: 45 },
+    { letter: 'G', minimum: 46, maximum: 60 },
+    { letter: 'O', minimum: 61, maximum: 75 }
+];
+
+function validateCartonDefinitions(cartons) {
+    Object.entries(cartons).forEach(([id, carton]) => {
+        const validGrid = Array.isArray(carton.numeros)
+            && carton.numeros.length === GRID_SIZE
+            && carton.numeros.every((row) => Array.isArray(row) && row.length === GRID_SIZE);
+
+        if (!validGrid || carton.num !== id || carton.numeros[2][2] !== 'FREE') {
+            throw new Error(`El cartón ${id} debe tener una cuadrícula válida de 5×5 y espacio libre al centro.`);
+        }
+
+        const numbersByColumn = Array.from({ length: GRID_SIZE }, () => new Set());
+        carton.numeros.forEach((row, rowIndex) => row.forEach((value, columnIndex) => {
+            if (rowIndex === 2 && columnIndex === 2) {
+                return;
+            }
+
+            const column = BINGO_COLUMNS[columnIndex];
+            if (!Number.isInteger(value)
+                || value < column.minimum
+                || value > column.maximum
+                || numbersByColumn[columnIndex].has(value)) {
+                throw new Error(`El número del cartón ${id} no corresponde a su columna BINGO.`);
+            }
+            numbersByColumn[columnIndex].add(value);
+        }));
+    });
+}
+
+validateCartonDefinitions(BASE_CARTONES);
 
 function cellsFromShape(shape) {
     return shape.flatMap((row, rowIndex) => (
@@ -453,6 +529,7 @@ const PATTERN_DEFINITIONS = Object.fromEntries(
 const state = {
     currentPattern: 'none',
     selectedThemeId: DEFAULT_THEME_ID,
+    selectedChipId: DEFAULT_CHIP_ID,
     cardCounter: 0
 };
 
@@ -462,7 +539,9 @@ function getDefaultSession() {
             { cartonId: '21' }
         ],
         selectedCartonId: '21',
-        selectedThemeId: DEFAULT_THEME_ID
+        selectedThemeId: DEFAULT_THEME_ID,
+        selectedChipId: DEFAULT_CHIP_ID,
+        currentPattern: 'none'
     };
 }
 
@@ -478,7 +557,25 @@ function loadSession() {
             return null;
         }
 
-        return parsed;
+        const validPattern = parsed.currentPattern === 'none'
+            || Object.prototype.hasOwnProperty.call(PATTERN_DEFINITIONS, parsed.currentPattern);
+
+        return {
+            cards: parsed.cards
+                .filter((card) => card && BASE_CARTONES[String(card.cartonId)])
+                .map((card) => ({
+                    cartonId: String(card.cartonId),
+                    marked: Array.isArray(card.marked)
+                        ? [...new Set(card.marked.map(Number).filter((index) => Number.isInteger(index) && index >= 0 && index < GRID_SIZE ** 2))]
+                        : []
+                })),
+            selectedCartonId: BASE_CARTONES[String(parsed.selectedCartonId)]
+                ? String(parsed.selectedCartonId)
+                : '21',
+            selectedThemeId: CARD_THEMES[parsed.selectedThemeId] ? parsed.selectedThemeId : DEFAULT_THEME_ID,
+            selectedChipId: CHIP_THEMES[parsed.selectedChipId] ? parsed.selectedChipId : DEFAULT_CHIP_ID,
+            currentPattern: validPattern ? parsed.currentPattern : 'none'
+        };
     } catch (error) {
         return null;
     }
@@ -487,19 +584,36 @@ function loadSession() {
 function saveSession() {
     const cards = Array.from(document.querySelectorAll('.bingo-card')).map((card) => ({
         cartonId: card.dataset.cartonId,
-        marked: Array.from(card.querySelectorAll('.cell.marked')).map((cell) => Number(cell.dataset.cellIndex))
+        marked: Array.from(card.querySelectorAll('.bingo-cell.is-marked'))
+            .map((cell) => Number(cell.dataset.cellIndex))
     }));
 
     const payload = {
         cards,
         selectedCartonId: getSelectedCartonId(),
-        selectedThemeId: state.selectedThemeId
+        selectedThemeId: state.selectedThemeId,
+        selectedChipId: state.selectedChipId,
+        currentPattern: state.currentPattern
     };
 
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        setSessionStatus('Guardado en este dispositivo');
     } catch (error) {
+        setSessionStatus('No se pudo guardar esta partida', true);
+    }
+}
+
+function setSessionStatus(message, hasError = false) {
+    const status = document.getElementById('sessionStatus');
+    if (!status) {
         return;
+    }
+
+    status.dataset.state = hasError ? 'error' : 'saved';
+    const messageElement = status.querySelector('.status-message');
+    if (messageElement) {
+        messageElement.textContent = message;
     }
 }
 
@@ -508,13 +622,10 @@ function getSelectedCartonId() {
     return select ? select.value : null;
 }
 
-function getThemeButtonsHTML(selectedThemeId, extraClass = '') {
-    return Object.entries(CARD_THEMES).map(([themeId, theme]) => {
-        const classes = ['color-btn', extraClass, themeId === selectedThemeId ? 'active' : '']
-            .filter(Boolean)
-            .join(' ');
-        return `<button class="${classes}" type="button" data-theme-id="${themeId}" aria-label="Color ${theme.name}" title="${theme.name}" style="background:${theme.swatch};"></button>`;
-    }).join('');
+function renderColorButtons(themes, selectedId, dataAttribute) {
+    return Object.entries(themes).map(([themeId, theme]) => (
+        `<button class="color-btn" type="button" data-${dataAttribute}="${themeId}" aria-label="${theme.name}" title="${theme.name}" aria-pressed="${themeId === selectedId}" style="--swatch:${theme.swatch};"></button>`
+    )).join('');
 }
 
 function applyCardTheme(cardElement, themeId) {
@@ -525,7 +636,6 @@ function applyCardTheme(cardElement, themeId) {
     cardElement.style.setProperty('--card-highlight', theme.highlight);
     cardElement.style.setProperty('--card-base', theme.base);
     cardElement.style.setProperty('--card-border', theme.border);
-
 }
 
 function setSelectedTheme(themeId) {
@@ -535,7 +645,7 @@ function setSelectedTheme(themeId) {
 
     state.selectedThemeId = themeId;
     document.querySelectorAll('#cardThemeOptions .color-btn').forEach((themeButton) => {
-        themeButton.classList.toggle('active', themeButton.dataset.themeId === themeId);
+        themeButton.setAttribute('aria-pressed', String(themeButton.dataset.themeId === themeId));
     });
 
     document.querySelectorAll('.bingo-card').forEach((card) => applyCardTheme(card, themeId));
@@ -547,35 +657,41 @@ function createCardElement(cartonId, options = {}) {
         return null;
     }
 
-    const cardElement = document.createElement('div');
+    const cardElement = document.createElement('article');
     cardElement.className = 'bingo-card';
     cardElement.dataset.cartonId = cartonId;
     state.cardCounter += 1;
     cardElement.id = `card-instance-${state.cardCounter}`;
+    const cardTitleId = `${cardElement.id}-title`;
 
     const gridHTML = cartonData.numeros
         .flatMap((row, rowIndex) => row.map((value, columnIndex) => {
             const cellIndex = rowIndex * GRID_SIZE + columnIndex;
             const isFreeSpace = value === 'FREE';
-            const cellContent = isFreeSpace ? '🦁' : value;
-            const className = isFreeSpace ? 'cell free-space' : 'cell';
-            return `<div class="${className}" data-cell-index="${cellIndex}">${cellContent}<span class="pattern-guide"></span></div>`;
+            const cellContent = isFreeSpace ? '🦁' : String(value);
+            const className = isFreeSpace ? 'bingo-cell free-space' : 'bingo-cell';
+            const accessibleNumber = isFreeSpace ? 'espacio libre' : `número ${value}`;
+            return `<button class="${className}" type="button" data-cell-index="${cellIndex}" aria-pressed="false" aria-label="Cartón ${cartonData.num}, columna ${BINGO_COLUMNS[columnIndex].letter}, ${accessibleNumber}"><span class="cell-number">${cellContent}</span><span class="pattern-guide" aria-hidden="true"></span></button>`;
         }))
         .join('');
 
     cardElement.innerHTML = `
-        <div class="carton-top-bar">
-            <div class="carton-header">CARTON <span>${cartonData.num}</span></div>
-            <button class="btn-remove" type="button" aria-label="Eliminar cartón">✕</button>
-        </div>
-        <div class="bingo-title-grid">
+        <header class="carton-top-bar">
+            <div class="carton-heading">
+                <span class="carton-kicker">CARTÓN</span>
+                <h3 class="carton-header" id="${cardTitleId}">N.º ${cartonData.num}</h3>
+            </div>
+            <button class="btn-remove" type="button" aria-label="Quitar cartón ${cartonData.num}" title="Quitar cartón">×</button>
+        </header>
+        <div class="bingo-title-grid" aria-hidden="true">
             <span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>
         </div>
-        <div class="ranges-row">
-            <span>1 AL 15</span><span>16 AL 30</span><span>31 AL 45</span><span>46 AL 60</span><span>61 AL 75</span>
+        <div class="ranges-row" aria-hidden="true">
+            ${BINGO_COLUMNS.map((column) => `<span>${column.minimum} AL ${column.maximum}</span>`).join('')}
         </div>
-        <div class="bingo-grid">${gridHTML}</div>
+        <div class="bingo-grid" role="group" aria-label="Casillas del cartón ${cartonData.num}">${gridHTML}</div>
     `;
+    cardElement.setAttribute('aria-labelledby', cardTitleId);
 
     applyCardTheme(cardElement, state.selectedThemeId);
     return cardElement;
@@ -587,14 +703,15 @@ function markSavedCells(cardElement, markedIndexes = []) {
     }
 
     const marked = new Set(markedIndexes.map(Number));
-    cardElement.querySelectorAll('.cell').forEach((cell) => {
+    cardElement.querySelectorAll('.bingo-cell').forEach((cell) => {
         if (marked.has(Number(cell.dataset.cellIndex))) {
-            cell.classList.add('marked');
+            cell.classList.add('is-marked');
+            cell.setAttribute('aria-pressed', 'true');
         }
     });
 }
 
-function agregarCarton(id = null, options = {}) {
+function addCard(id = null, options = {}) {
     const cartonId = id || getSelectedCartonId();
     const persist = options.persist !== false;
     const cardElement = createCardElement(cartonId, options);
@@ -608,19 +725,47 @@ function agregarCarton(id = null, options = {}) {
     }
 
     markSavedCells(cardElement, options.marked);
-    updatePattern(state.currentPattern);
+    updatePattern(state.currentPattern, false);
+    updateCardsSummary();
 
     if (persist) {
         saveSession();
     }
 }
 
+function updateCardsSummary() {
+    const count = document.querySelectorAll('#cardsContainer .bingo-card').length;
+    const countLabel = count === 1 ? 'cartón' : 'cartones';
+    const countValue = document.getElementById('cardCount');
+    const summary = document.getElementById('cardsSummary');
+    const emptyState = document.getElementById('emptyState');
+    const resetButton = document.getElementById('resetCardsButton');
+
+    if (countValue) {
+        countValue.textContent = String(count);
+    }
+
+    if (summary) {
+        summary.textContent = `${count} ${countLabel} ${count === 1 ? 'activo' : 'activos'}`;
+    }
+
+    if (emptyState) {
+        emptyState.hidden = count > 0;
+    }
+
+    if (resetButton) {
+        resetButton.disabled = document.querySelectorAll('.bingo-cell.is-marked').length === 0;
+    }
+}
+
 function toggleCell(cell) {
-    if (!cell || !cell.classList) {
+    if (!cell || !cell.classList.contains('bingo-cell')) {
         return;
     }
 
-    const isMarked = cell.classList.toggle('marked');
+    const isMarked = cell.classList.toggle('is-marked');
+    cell.setAttribute('aria-pressed', String(isMarked));
+    updateCardsSummary();
     if (isMarked) {
         createConfetti(cell);
     }
@@ -629,6 +774,10 @@ function toggleCell(cell) {
 }
 
 function createConfetti(cell) {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
     const colors = ['#fdd835', '#ff6b6b', '#4dd0e1', '#81c784', '#ba68c8', '#ffb74d'];
     const confettiLayer = document.createElement('span');
     confettiLayer.className = 'confetti-layer';
@@ -639,7 +788,7 @@ function createConfetti(cell) {
         piece.style.setProperty('--x', `${(Math.random() * 120 - 60).toFixed(2)}px`);
         piece.style.setProperty('--y', `${(Math.random() * 120 - 60).toFixed(2)}px`);
         piece.style.setProperty('--rotation', `${(Math.random() * 360).toFixed(2)}deg`);
-        piece.style.setProperty('--color', colors[index % colors.length]);
+        piece.style.setProperty('--confetti-color', colors[index % colors.length]);
         confettiLayer.appendChild(piece);
     }
 
@@ -648,17 +797,29 @@ function createConfetti(cell) {
 }
 
 function resetAll() {
-    document.querySelectorAll('.cell').forEach((cell) => cell.classList.remove('marked'));
+    document.querySelectorAll('.bingo-cell.is-marked').forEach((cell) => {
+        cell.classList.remove('is-marked');
+        cell.setAttribute('aria-pressed', 'false');
+    });
+    document.querySelectorAll('.confetti-layer').forEach((layer) => layer.remove());
+    updateCardsSummary();
     saveSession();
 }
 
-function setChipColor(fill, border, glow, btn) {
-    document.documentElement.style.setProperty('--chip-color', fill);
-    document.documentElement.style.setProperty('--chip-border', border);
-    document.documentElement.style.setProperty('--chip-glow', glow);
+function setChipColor(themeId) {
+    const theme = CHIP_THEMES[themeId];
+    if (!theme) {
+        return;
+    }
 
-    document.querySelectorAll('#chipOptions .color-btn').forEach((button) => button.classList.remove('active'));
-    btn.classList.add('active');
+    state.selectedChipId = themeId;
+    document.documentElement.style.setProperty('--chip-color', theme.fill);
+    document.documentElement.style.setProperty('--chip-border', theme.border);
+    document.documentElement.style.setProperty('--chip-glow', theme.glow);
+
+    document.querySelectorAll('#chipOptions .color-btn').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.chipId === themeId));
+    });
 }
 
 function getPatternCells(cells, pattern) {
@@ -670,19 +831,34 @@ function getPatternCells(cells, pattern) {
     return [...new Set(indices.map((index) => cells[index]).filter(Boolean))];
 }
 
-function updatePattern(pattern) {
-    state.currentPattern = pattern;
-    document.querySelectorAll('.cell').forEach((cell) => cell.classList.remove('guide-active'));
+function updatePattern(pattern, shouldSave = true) {
+    const validPattern = pattern === 'none'
+        || Object.prototype.hasOwnProperty.call(PATTERN_DEFINITIONS, pattern);
+    state.currentPattern = validPattern ? pattern : 'none';
 
-    if (pattern === 'none') {
+    const patternSelect = document.getElementById('patternSelect');
+    if (patternSelect) {
+        patternSelect.value = state.currentPattern;
+    }
+
+    document.querySelectorAll('.bingo-cell').forEach((cell) => cell.classList.remove('guide-active'));
+
+    if (state.currentPattern === 'none') {
+        if (shouldSave) {
+            saveSession();
+        }
         return;
     }
 
     document.querySelectorAll('.bingo-grid').forEach((grid) => {
-        const cells = Array.from(grid.querySelectorAll('.cell'));
-        const guideCells = getPatternCells(cells, pattern);
+        const cells = Array.from(grid.querySelectorAll('.bingo-cell'));
+        const guideCells = getPatternCells(cells, state.currentPattern);
         guideCells.forEach((cell) => cell.classList.add('guide-active'));
     });
+
+    if (shouldSave) {
+        saveSession();
+    }
 }
 
 function populatePatternSelect() {
@@ -734,26 +910,46 @@ function populateCardThemeOptions() {
         return;
     }
 
-    themeOptions.innerHTML = getThemeButtonsHTML(state.selectedThemeId);
+    themeOptions.innerHTML = renderColorButtons(CARD_THEMES, state.selectedThemeId, 'theme-id');
+}
+
+function populateChipOptions() {
+    const chipOptions = document.getElementById('chipOptions');
+    if (!chipOptions) {
+        return;
+    }
+
+    chipOptions.innerHTML = renderColorButtons(CHIP_THEMES, state.selectedChipId, 'chip-id');
 }
 
 function restoreSession() {
-    const session = loadSession() || getDefaultSession();
+    const savedSession = loadSession();
+    const session = savedSession || getDefaultSession();
     const selectedThemeId = CARD_THEMES[session.selectedThemeId] ? session.selectedThemeId : DEFAULT_THEME_ID;
+    const selectedChipId = CHIP_THEMES[session.selectedChipId] ? session.selectedChipId : DEFAULT_CHIP_ID;
 
     setSelectedTheme(selectedThemeId);
+    setChipColor(selectedChipId);
     populateCartonSelect(session.selectedCartonId);
 
+    state.currentPattern = session.currentPattern || 'none';
     session.cards.forEach((card) => {
         if (!BASE_CARTONES[card.cartonId]) {
             return;
         }
 
-        agregarCarton(card.cartonId, {
+        addCard(card.cartonId, {
             marked: card.marked,
             persist: false
         });
     });
+
+    updatePattern(state.currentPattern, false);
+    updateCardsSummary();
+
+    if (!savedSession) {
+        saveSession();
+    }
 }
 
 function bindEvents() {
@@ -765,7 +961,7 @@ function bindEvents() {
     const resetButton = document.getElementById('resetCardsButton');
     const cardsContainer = document.getElementById('cardsContainer');
 
-    addButton?.addEventListener('click', () => agregarCarton());
+    addButton?.addEventListener('click', () => addCard());
     resetButton?.addEventListener('click', resetAll);
     patternSelect?.addEventListener('change', (event) => updatePattern(event.target.value));
 
@@ -775,8 +971,8 @@ function bindEvents() {
             return;
         }
 
-        const { fill, border, glow } = button.dataset;
-        setChipColor(fill, border, glow, button);
+        setChipColor(button.dataset.chipId);
+        saveSession();
     });
 
     cardThemeOptions?.addEventListener('click', (event) => {
@@ -797,20 +993,15 @@ function bindEvents() {
             const card = removeButton.closest('.bingo-card');
             if (card) {
                 card.remove();
+                updateCardsSummary();
                 saveSession();
             }
             return;
         }
 
-        const cell = event.target.closest('.cell');
+        const cell = event.target.closest('.bingo-cell');
         if (cell) {
             toggleCell(cell);
-        }
-    });
-
-    cartonSelect?.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            agregarCarton();
         }
     });
 }
@@ -818,9 +1009,9 @@ function bindEvents() {
 function initializeApp() {
     populatePatternSelect();
     populateCardThemeOptions();
+    populateChipOptions();
     bindEvents();
     restoreSession();
-    updatePattern(state.currentPattern);
 }
 
 document.addEventListener('DOMContentLoaded', initializeApp);
