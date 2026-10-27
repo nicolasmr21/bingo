@@ -3,57 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bingo - Multicartón</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#0b1110">
+    <meta name="description" content="Administra tus cartones de bingo, marca números y sigue los patrones de juego.">
+    <title>Bingo | Panel de juego</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./script.js" defer></script>
 </head>
 <body>
-
-    <div class="panel-controls">
-        <div class="controls-row">
-            <!-- Agregar Cartón -->
-            <div class="control-group">
-                <span class="control-label">Añadir:</span>
-                <select class="select-carton" id="cartonSelect" aria-label="Selecciona un cartón para agregar"></select>
-                <button class="btn-action" id="addCartonButton" type="button" aria-label="Agregar cartón">+ Agregar</button>
+    <div class="app-shell">
+        <header class="app-header">
+            <a class="brand" href="#inicio" aria-label="Bingo, ir al inicio">
+                <span class="brand-mark" aria-hidden="true">B</span>
+                <span class="brand-copy">
+                    <span class="brand-name">Bingo</span>
+                    <span class="brand-caption">Panel de juego</span>
+                </span>
+            </a>
+            <div class="save-indicator" id="sessionStatus" role="status" aria-live="polite">
+                <span class="status-dot" aria-hidden="true"></span>
+                <span class="status-message">Guardado en este dispositivo</span>
             </div>
+        </header>
 
-            <div class="control-group">
-                <span class="control-label">Cartones:</span>
-                <div class="color-options" id="cardThemeOptions" aria-label="Selector de color de cartón"></div>
-            </div>
-
-            <!-- Acciones -->
-            <div class="control-group">
-                <button class="btn-action btn-reset" id="resetCardsButton" type="button" aria-label="Limpiar todos los cartones">Limpiar Todos</button>
-            </div>
-        </div>
-
-        <div class="controls-row">
-            <!-- Color de Fichas -->
-            <div class="control-group">
-                <span class="control-label">Fichas:</span>
-                <div class="color-options" id="chipOptions" aria-label="Selector de color de fichas">
-                    <button class="color-btn active" type="button" aria-label="Color rojo" title="Color rojo" data-fill="rgba(231, 76, 60, 0.85)" data-border="#ff6b6b" data-glow="rgba(231, 76, 60, 0.6)" style="background:#e74c3c"></button>
-                    <button class="color-btn" type="button" aria-label="Color azul" title="Color azul" data-fill="rgba(52, 152, 219, 0.85)" data-border="#5dade2" data-glow="rgba(52, 152, 219, 0.6)" style="background:#3498db"></button>
-                    <button class="color-btn" type="button" aria-label="Color verde" title="Color verde" data-fill="rgba(46, 204, 113, 0.85)" data-border="#58d68d" data-glow="rgba(46, 204, 113, 0.6)" style="background:#2ecc71"></button>
-                    <button class="color-btn" type="button" aria-label="Color rosa" title="Color rosa" data-fill="rgba(232, 67, 147, 0.85)" data-border="#fd79a8" data-glow="rgba(232, 67, 147, 0.6)" style="background:#e84393"></button>
-                    <button class="color-btn" type="button" aria-label="Color turquesa" title="Color turquesa" data-fill="rgba(0, 206, 201, 0.85)" data-border="#81ecec" data-glow="rgba(0, 206, 201, 0.6)" style="background:#00cec9"></button>
+        <main id="inicio">
+            <section class="control-panel" aria-labelledby="panelTitle">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">PREPARA LA PARTIDA</p>
+                        <h1 id="panelTitle">Tus cartones, a la vista.</h1>
+                        <p class="panel-description">Elige tus tablas, define una guía y empieza a marcar.</p>
+                    </div>
+                    <div class="card-count" aria-label="Cantidad de cartones activos">
+                        <span class="count-value" id="cardCount">1</span>
+                        <span class="count-label">EN JUEGO</span>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="controls-row">
-            <!-- Patrones de Juego -->
-            <div class="control-group">
-                <span class="control-label">Modo:</span>
-                <select class="select-carton" id="patternSelect" aria-label="Selecciona un patrón de juego"></select>
-            </div>
-        </div>
+                <div class="control-grid">
+                    <div class="control-field add-field">
+                        <label for="cartonSelect">Añadir un cartón</label>
+                        <div class="input-action-row">
+                            <select id="cartonSelect" class="select-control" aria-label="Selecciona el cartón que quieres añadir"></select>
+                            <button class="button button-primary" id="addCartonButton" type="button">
+                                <span aria-hidden="true">＋</span> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-field pattern-field">
+                        <label for="patternSelect">Guía de juego</label>
+                        <select id="patternSelect" class="select-control" aria-label="Selecciona una guía de juego"></select>
+                    </div>
+
+                    <fieldset class="control-field color-field">
+                        <legend>Color de cartones</legend>
+                        <div class="color-options" id="cardThemeOptions" role="group" aria-label="Color general de todos los cartones"></div>
+                    </fieldset>
+
+                    <fieldset class="control-field color-field">
+                        <legend>Color de fichas</legend>
+                        <div class="color-options" id="chipOptions" role="group" aria-label="Color de las marcas"></div>
+                    </fieldset>
+                </div>
+
+                <div class="panel-footer">
+                    <p>Tu partida se guarda automáticamente en este dispositivo.</p>
+                    <button class="button button-quiet" id="resetCardsButton" type="button" disabled>Borrar todas las marcas</button>
+                </div>
+            </section>
+
+            <section class="cards-section" aria-labelledby="cardsTitle">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">EN JUEGO</p>
+                        <h2 id="cardsTitle">Mis cartones</h2>
+                    </div>
+                    <p class="cards-summary" id="cardsSummary" role="status" aria-live="polite">1 cartón activo</p>
+                </div>
+
+                <div class="empty-state" id="emptyState" hidden>
+                    <span class="empty-icon" aria-hidden="true">▦</span>
+                    <h3>Aún no hay cartones</h3>
+                    <p>Elige un cartón arriba y añádelo para empezar.</p>
+                </div>
+                <div class="cards-container" id="cardsContainer"></div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <span>BINGO</span>
+            <span>Que empiece el juego</span>
+        </footer>
     </div>
-
-    <!-- Contenedor donde se generan los cartones -->
-    <div class="cards-container" id="cardsContainer"></div>
-
-    <script src="script.js"></script>
 </body>
 </html>
