@@ -346,11 +346,17 @@ h1 {
     flex-shrink: 0;
     place-items: center;
     padding: 0;
+    -webkit-appearance: none;
+    appearance: none;
     border: 2px solid rgba(235, 245, 238, 0.45);
     border-radius: 50%;
+    background-clip: padding-box;
+    -webkit-background-clip: padding-box;
     cursor: pointer;
     color: #101710;
     aspect-ratio: 1;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
     transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
 }
 
@@ -872,6 +878,10 @@ h2 {
         min-height: 44px;
         flex: 0 0 44px;
         flex-shrink: 0;
+        -webkit-appearance: none;
+        appearance: none;
+        background-clip: padding-box;
+        -webkit-background-clip: padding-box;
     }
 
     .btn-remove {
