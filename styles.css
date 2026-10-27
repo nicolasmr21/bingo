@@ -337,26 +337,33 @@ h1 {
 
 .color-btn {
     position: relative;
-    display: grid;
+    display: inline-grid;
     width: 40px;
     height: 40px;
     min-width: 44px;
     min-height: 44px;
     flex: 0 0 44px;
     flex-shrink: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     place-items: center;
     padding: 0;
+    margin: 0;
     -webkit-appearance: none;
     appearance: none;
     border: 2px solid rgba(235, 245, 238, 0.45);
     border-radius: 50%;
+    background-color: transparent;
+    background-image: none;
     background-clip: padding-box;
     -webkit-background-clip: padding-box;
+    overflow: hidden;
     cursor: pointer;
     color: #101710;
     aspect-ratio: 1;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
+    vertical-align: middle;
     transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
 }
 
@@ -878,10 +885,15 @@ h2 {
         min-height: 44px;
         flex: 0 0 44px;
         flex-shrink: 0;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        display: inline-grid;
         -webkit-appearance: none;
         appearance: none;
+        background-color: transparent;
         background-clip: padding-box;
         -webkit-background-clip: padding-box;
+        overflow: hidden;
     }
 
     .btn-remove {
