@@ -328,25 +328,29 @@ h1 {
 
 .color-options {
     display: flex;
-    min-height: 34px;
+    min-height: 44px;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
+    row-gap: 10px;
 }
 
 .color-btn {
     position: relative;
     display: grid;
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     min-width: 44px;
     min-height: 44px;
+    flex: 0 0 44px;
+    flex-shrink: 0;
     place-items: center;
     padding: 0;
     border: 2px solid rgba(235, 245, 238, 0.45);
     border-radius: 50%;
     cursor: pointer;
     color: #101710;
+    aspect-ratio: 1;
     transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
 }
 
@@ -856,14 +860,18 @@ h2 {
     }
 
     .color-options {
-        gap: 8px;
+        gap: 12px;
+        min-height: 48px;
+        row-gap: 12px;
     }
 
     .color-btn {
-        width: 38px;
-        height: 38px;
+        width: 44px;
+        height: 44px;
         min-width: 44px;
         min-height: 44px;
+        flex: 0 0 44px;
+        flex-shrink: 0;
     }
 
     .btn-remove {
