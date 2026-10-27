@@ -607,13 +607,13 @@ h2 {
     place-items: center;
     line-height: 1;
     text-align: center;
-    font-size: clamp(1rem, 4.2vw, 1.7rem);
+    font-size: clamp(1rem, 5vw, 1.8rem);
     font-size: clamp(1rem, 7.2cqw, 3.4rem);
     font-weight: 800;
 }
 
 .bingo-cell.free-space .cell-number {
-    font-size: clamp(1.1rem, 4.6vw, 1.85rem);
+    font-size: clamp(1.1rem, 5.4vw, 1.95rem);
     font-size: clamp(1.1rem, 7.8cqw, 3.7rem);
     font-weight: 900;
 }
@@ -937,12 +937,12 @@ h2 {
     }
 
     .cell-number {
-        font-size: clamp(1.1rem, 4.6vw, 1.8rem);
+        font-size: clamp(1.05rem, 5.2vw, 1.9rem);
         font-size: 7.4cqw;
     }
 
     .bingo-cell.free-space .cell-number {
-        font-size: clamp(1.2rem, 5vw, 1.95rem);
+        font-size: clamp(1.15rem, 5.6vw, 2rem);
         font-size: 8cqw;
     }
 
