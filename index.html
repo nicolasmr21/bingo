@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#0b1110">
     <meta name="description" content="Administra tus cartones de bingo, marca números y sigue los patrones de juego.">
     <title>Bingo | Panel de juego</title>
-    <link rel="stylesheet" href="./styles.css">
-    <script src="./script.js" defer></script>
+    <link rel="stylesheet" href="./styles.css?v=5">
+    <script src="./script.js?v=5" defer></script>
 </head>
 <body>
     <div class="app-shell">
@@ -55,15 +55,15 @@
                         <select id="patternSelect" class="select-control" aria-label="Selecciona una guía de juego"></select>
                     </div>
 
-                    <fieldset class="control-field color-field">
-                        <legend>Color de cartones</legend>
+                    <div class="control-field color-field" role="group" aria-labelledby="cardThemeLabel">
+                        <p class="field-label" id="cardThemeLabel">Color de cartones</p>
                         <div class="color-options" id="cardThemeOptions" role="group" aria-label="Color general de todos los cartones"></div>
-                    </fieldset>
+                    </div>
 
-                    <fieldset class="control-field color-field">
-                        <legend>Color de fichas</legend>
+                    <div class="control-field color-field" role="group" aria-labelledby="chipLabel">
+                        <p class="field-label" id="chipLabel">Color de fichas</p>
                         <div class="color-options" id="chipOptions" role="group" aria-label="Color de las marcas"></div>
-                    </fieldset>
+                    </div>
                 </div>
 
                 <div class="panel-footer">

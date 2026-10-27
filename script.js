@@ -624,7 +624,7 @@ function getSelectedCartonId() {
 
 function renderColorButtons(themes, selectedId, dataAttribute) {
     return Object.entries(themes).map(([themeId, theme]) => (
-        `<button class="color-btn" type="button" data-${dataAttribute}="${themeId}" aria-label="${theme.name}" title="${theme.name}" aria-pressed="${themeId === selectedId}" style="--swatch:${theme.swatch};"></button>`
+        `<button class="color-btn" type="button" data-${dataAttribute}="${themeId}" aria-label="${theme.name}" title="${theme.name}" aria-pressed="${themeId === selectedId}"><span class="color-dot" aria-hidden="true" style="background-color:${theme.swatch};"></span></button>`
     )).join('');
 }
 
